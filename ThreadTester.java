@@ -6,8 +6,11 @@ public class ThreadTester{
         // // th1.start();
         
         // Method1 
-        // Thread thread = new Thread(new Thread2() , "thread2");
-
+        // Runnable thread22 = new Thread2();
+        // Thread thread = new Thread(thread22 , "thread2");
+        // thread.start();
+        Thread thread = new Thread(new Thread2(), "thread2");
+        thread.start();
         // Method2
         // Thread thread = new Thread(()->{
         //      for(int i = 0;i < 5;i++ ){

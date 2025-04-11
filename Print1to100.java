@@ -1,22 +1,37 @@
 public class Print1to100 {
-    public static void print1to100(int start,int end){
-        synchronized(Print1to100.class){
-          for(int i = start;i <= end;i++) {
-                System.out.println(i);
-            }
-        }
-    }
-    public static void main(String[] args) {
-         new Thread(()->{
-             print1to100(1,33);
-         }).start();
-         
-         new Thread(()->{
-             print1to100(34, 67);
-         }).start();
+    private static int count = 1;
+    private static int MAX = 100;
+    private static Object lock = new Object();
 
-         new Thread(()->{ 
-            print1to100(68, 100);
-         }).start();
-     }
+    public static void main(String[] args) {
+
+        Runnable task = () -> {
+            while (true) {
+                synchronized (lock) {
+                    if (count > MAX)
+                        break;
+                    System.out.println(Thread.currentThread().getName() + " => " + count++);
+                    lock.notifyAll();
+                    try {
+                        if (count < MAX) {
+                            lock.wait();
+                        }
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        Thread.currentThread().interrupt();
+                    }
+                }
+
+            }
+        };
+
+        Thread t1 = new Thread(task, "T1");
+        Thread t2 = new Thread(task, "T2");
+        Thread t3 = new Thread(task, "T3");
+
+        t1.start();
+        t2.start();
+        t3.start();
+    }
+
 }
